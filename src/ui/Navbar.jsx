@@ -33,9 +33,9 @@ export default function Navbar() {
               <li>
                 <a
                   className={
-                    location.pathname === "/student" ? "menu-active" : ""
+                    location.pathname === "/home/student" ? "menu-active" : ""
                   }
-                  onClick={() => navigate("/student")}
+                  onClick={() => navigate("/home/student")}
                 >
                   Student
                 </a>
@@ -43,16 +43,21 @@ export default function Navbar() {
               <li>
                 <a
                   className={
-                    location.pathname === "/score" ? "menu-active" : ""
+                    location.pathname === "/home/score" ? "menu-active" : ""
                   }
-                  onClick={() => navigate("/score")}
+                  onClick={() => navigate("/home/score")}
                 >
                   Score
                 </a>
               </li>
             </ul>
           </div>
-          <a className="btn btn-ghost text-xl">Sunshine</a>
+          <a
+            className="btn btn-ghost text-xl"
+            onClick={() => navigate("/home/score")}
+          >
+            Sunshine
+          </a>
         </div>
 
         {/* web link */}
@@ -61,17 +66,19 @@ export default function Navbar() {
             <li>
               <a
                 className={
-                  location.pathname === "/student" ? "menu-active" : ""
+                  location.pathname === "/home/student" ? "menu-active" : ""
                 }
-                onClick={() => navigate("/student")}
+                onClick={() => navigate("/home/student")}
               >
                 Student
               </a>
             </li>
             <li>
               <a
-                className={location.pathname === "/score" ? "menu-active" : ""}
-                onClick={() => navigate("/score")}
+                className={
+                  location.pathname === "/home/score" ? "menu-active" : ""
+                }
+                onClick={() => navigate("/home/score")}
               >
                 Score{" "}
               </a>
