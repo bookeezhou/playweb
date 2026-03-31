@@ -10,6 +10,9 @@ import StudentList from "./features/student/StudentList";
 import Login from "./features/auth/Login";
 import Signup from "./features/auth/Signup";
 import Home from "./pages/Home";
+import Info from "./features/user/Info";
+import ScoreEdit from "./features/score/ScoreEdit";
+import StudentEdit from "./features/student/StudentEdit";
 
 function App() {
   return (
@@ -19,8 +22,16 @@ function App() {
           <Route path="/" element={<AppLayout />}>
             <Route path="" element={<Navigate to="/home/score" />} />
             <Route path="home" element={<Home />}>
-              <Route path="score" element={<ScoreList />} />
-              <Route path="student" element={<StudentList />} />
+              <Route path="score">
+                <Route path="" element={<ScoreList />} />
+                <Route path=":id" element={<ScoreEdit />} />
+              </Route>
+
+              <Route path="student">
+                <Route path="" element={<StudentList />} />
+                <Route path=":id" element={<StudentEdit />} />
+              </Route>
+              <Route path="info" element={<Info />} />
             </Route>
             <Route path="login" element={<Login />} />
             <Route path="signup" element={<Signup />} />

@@ -1,4 +1,8 @@
-export default function StudentListItem() {
+import { useNavigate } from "react-router-dom";
+
+export default function StudentListItem({ studentItem }) {
+  const navigate = useNavigate();
+
   return (
     <tr>
       <th>
@@ -11,27 +15,32 @@ export default function StudentListItem() {
           <div className="avatar">
             <div className="mask mask-squircle h-12 w-12">
               <img
-                src="https://img.daisyui.com/images/profile/demo/2@94.webp"
+                src={studentItem.avatar}
                 alt="Avatar Tailwind CSS Component"
               />
             </div>
           </div>
           {/* name and gender */}
           <div>
-            <div className="font-bold">Hart Hagerty</div>
-            <div className="text-sm opacity-50">United States</div>
+            <div className="font-bold">{studentItem.name}</div>
+            <div className="text-sm opacity-50">{studentItem.gender}</div>
           </div>
         </div>
       </td>
       <td>
-        Zemlak, Daniel and Leannon
+        {studentItem.class}
         <br />
         <span className="badge badge-ghost badge-sm">
-          Desktop Support Technician
+          {studentItem.teacher}
         </span>
       </td>
       <th>
-        <button className="btn btn-ghost btn-sm">details</button>
+        <button
+          className="btn btn-ghost btn-sm"
+          onClick={() => navigate(`/home/student/${studentItem.id}`)}
+        >
+          details
+        </button>
         <button className="btn btn-error btn-sm">delete</button>
       </th>
     </tr>
