@@ -13,6 +13,8 @@ import Home from "./pages/Home";
 import Info from "./features/user/Info";
 import ScoreEdit from "./features/score/ScoreEdit";
 import StudentEdit from "./features/student/StudentEdit";
+import ScoreUpload from "./features/score/ScoreUpload";
+import StudentCreate from "./features/student/StudentCreate";
 
 function App() {
   return (
@@ -25,11 +27,13 @@ function App() {
               <Route path="score">
                 <Route path="" element={<ScoreList />} />
                 <Route path=":id" element={<ScoreEdit />} />
+                <Route path="upload" element={<ScoreUpload />} />
               </Route>
 
               <Route path="student">
                 <Route path="" element={<StudentList />} />
                 <Route path=":id" element={<StudentEdit />} />
+                <Route path="create" element={<StudentCreate />} />
               </Route>
               <Route path="info" element={<Info />} />
             </Route>

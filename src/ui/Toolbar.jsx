@@ -1,7 +1,18 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function Toolbar() {
   const location = useLocation();
+  const navigate = useNavigate();
+
+  function onClick() {
+    const { pathname } = location;
+    if (pathname === "/home/score") {
+      navigate("/home/score/upload");
+      return;
+    }
+
+    navigate("/home/student/create");
+  }
 
   return (
     <section className="grid grid-cols-4 items-center text-center mx-4 my-6 w-full gap-2">
@@ -156,7 +167,7 @@ export default function Toolbar() {
       </div>
 
       <div className="col-span-1">
-        <button className="btn btn-primary">
+        <button className="btn btn-primary" onClick={onClick}>
           {location.pathname === "/home/score"
             ? "Upload Score"
             : "Create Student"}
