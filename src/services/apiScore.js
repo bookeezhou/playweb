@@ -1,4 +1,4 @@
-const mockScoreList = [
+/* const mockScoreList = [
   {
     id: "1",
     name: "John Doe",
@@ -79,8 +79,17 @@ const mockScoreList = [
     semester: "Spring 2023",
     score: 91,
   },
-];
+]; */
 
-export function getScoreList() {
-  return mockScoreList;
+import { supabase } from "../utils/superbase";
+
+export async function getScoreList() {
+  const { data: scores, error } = await supabase.from("score").select("*");
+
+  if (error) {
+    console.log(error.message);
+    return;
+  }
+
+  return scores;
 }

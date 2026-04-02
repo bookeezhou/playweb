@@ -6,9 +6,13 @@ export default function StudentList() {
   const [studentList, setStudentList] = useState([]);
 
   useEffect(() => {
-    const mockStudentList = getStudentList();
-    // console.log(mockStudentList);
-    setStudentList(mockStudentList);
+    async function fetchData() {
+      const mockStudentList = await getStudentList();
+      // console.log(mockStudentList);
+      setStudentList(mockStudentList);
+    }
+
+    fetchData();
   }, []);
 
   return (

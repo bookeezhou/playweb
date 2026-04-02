@@ -6,8 +6,13 @@ export default function ScoreList() {
   const [scoreList, setScoreList] = useState([]);
 
   useEffect(() => {
-    const mockScoreList = getScoreList();
-    setScoreList(mockScoreList);
+    async function fetchData() {
+      const mockScoreList = await getScoreList();
+      console.log(mockScoreList);
+      setScoreList(mockScoreList);
+    }
+
+    fetchData();
   }, []);
 
   return (

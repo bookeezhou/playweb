@@ -5,10 +5,12 @@ export default function ScoreListItem({ scoreItem }) {
 
   return (
     <tr>
-      <td>{scoreItem.name}</td>
-      <td>{scoreItem.class}</td>
+      <td>{scoreItem.student_id}</td>
+      <td>{scoreItem.student_id}</td>
       <td>{scoreItem.subject}</td>
-      <td>{scoreItem.semester}</td>
+      <td>
+        {scoreItem.semesterSeason} {scoreItem.semesterYear}
+      </td>
       <td>{scoreItem.score}</td>
       <th>
         <button

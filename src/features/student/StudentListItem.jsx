@@ -27,13 +27,12 @@ export default function StudentListItem({ studentItem }) {
           </div>
         </div>
       </td>
+      {/* class and room teacher */}
+
       <td>
-        {studentItem.class}
-        <br />
-        <span className="badge badge-ghost badge-sm">
-          {studentItem.teacher}
-        </span>
+        {studentItem.class} | year {studentItem.grade}
       </td>
+
       <th>
         <button
           className="btn btn-ghost btn-sm"

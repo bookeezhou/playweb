@@ -1,6 +1,7 @@
 import { faker } from "@faker-js/faker";
+import { supabase } from "../utils/superbase";
 
-const mockStudentList = [
+/* const mockStudentList = [
   {
     id: "1",
     name: "John Doe",
@@ -71,13 +72,15 @@ const mockStudentList = [
     gender: "female",
     teacher: "mrs. clark",
   },
-];
+]; */
 
-export function getStudentList() {
-  return mockStudentList.map((student) => {
-    return {
-      ...student,
-      avatar: faker.image.avatar(),
-    };
-  });
+export async function getStudentList() {
+  const { data: student, error } = await supabase.from("student").select("*");
+
+  if (error) {
+    console.log(error.message);
+    return;
+  }
+
+  return student;
 }
