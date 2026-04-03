@@ -1,4 +1,23 @@
+import { useState } from "react";
+import { login } from "../../services/apiAuth";
+import { useNavigate } from "react-router-dom";
+
 export default function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+
+  async function onClick() {
+    const data = await login(email, password);
+
+    if (data) {
+      navigate("/");
+      console.log("Login successfully");
+      console.log(data);
+    } else {
+      console.log("Login failed");
+    }
+  }
   return (
     <>
       <div className="w-1/3 mx-auto text-center shadow-2xl shadow-amber-300 rounded-box mt-40">
@@ -21,7 +40,13 @@ export default function Login() {
                 <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
               </g>
             </svg>
-            <input type="email" placeholder="mail@site.com" required />
+            <input
+              type="email"
+              placeholder="mail@site.com"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
           </label>
           <div className="validator-hint hidden">Enter valid email address</div>
           <br />
@@ -50,6 +75,8 @@ export default function Login() {
               minLength="8"
               pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
               title="Must be more than 8 characters, including number, lowercase letter, uppercase letter"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
           </label>
           <p className="validator-hint hidden">
@@ -74,7 +101,9 @@ export default function Login() {
           <button className="btn btn-link mx-1">Forgotten password?</button>
         </div>
         <div>
-          <button className="btn btn-primary mx-4 my-4">Login</button>
+          <button className="btn btn-primary mx-4 my-4" onClick={onClick}>
+            Login
+          </button>
           <button className="btn btn-secondary mx-4 my-4">Signup</button>
         </div>
       </div>

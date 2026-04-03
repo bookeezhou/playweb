@@ -31,7 +31,7 @@ export default function Toolbar() {
                 fill="none"
                 stroke="currentColor"
                 strokeLinecap="square"
-                stroke-miterlimit="10"
+                strokeMiterlimit="10"
                 strokeWidth="2"
               ></circle>
               <path
@@ -39,7 +39,7 @@ export default function Toolbar() {
                 fill="none"
                 stroke="currentColor"
                 strokeLinecap="square"
-                stroke-miterlimit="10"
+                strokeMiterlimit="10"
                 strokeWidth="2"
               ></path>
               <circle
@@ -67,7 +67,7 @@ export default function Toolbar() {
                 fill="none"
                 stroke="currentColor"
                 strokeLinecap="square"
-                stroke-miterlimit="10"
+                strokeMiterlimit="10"
                 strokeWidth="2"
               ></circle>
               <polyline
@@ -75,7 +75,7 @@ export default function Toolbar() {
                 fill="none"
                 stroke="currentColor"
                 strokeLinecap="square"
-                stroke-miterlimit="10"
+                strokeMiterlimit="10"
                 strokeWidth="2"
               ></polyline>
             </g>

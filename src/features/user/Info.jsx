@@ -1,14 +1,27 @@
 import { useState } from "react";
+import { uploadAvatar } from "../../services/apiStorage";
 
 export default function Info() {
   const [currentAvatarUrl, setCurrentAvatarUrl] = useState(
     "https://img.daisyui.com/images/profile/demo/yellingcat@192.webp",
   );
 
+  const [avatarFile, setAvatarFile] = useState(null);
+
   function handleCurrentAvatar(event) {
     const file = event.target.files[0];
+    setAvatarFile(file);
     const newAvatarUrl = URL.createObjectURL(file);
     setCurrentAvatarUrl(newAvatarUrl);
+  }
+
+  async function onClick() {
+    if (!avatarFile) {
+      // waring toast
+      return;
+    }
+    const data = await uploadAvatar(avatarFile);
+    console.log(data);
   }
   return (
     <>
@@ -69,7 +82,9 @@ export default function Info() {
         {/* button */}
 
         <div>
-          <button className="btn btn-primary my-4">Update avatar</button>
+          <button className="btn btn-primary my-4" onClick={onClick}>
+            Update avatar
+          </button>
         </div>
       </div>
     </>

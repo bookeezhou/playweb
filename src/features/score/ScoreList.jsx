@@ -8,7 +8,6 @@ export default function ScoreList() {
   useEffect(() => {
     async function fetchData() {
       const mockScoreList = await getScoreList();
-      console.log(mockScoreList);
       setScoreList(mockScoreList);
     }
 

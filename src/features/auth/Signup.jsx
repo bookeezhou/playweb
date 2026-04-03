@@ -1,10 +1,22 @@
+import { useState } from "react";
+import { signup } from "../../services/apiAuth";
+
 export default function Signup() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  async function onClick() {
+    const data = await signup(email, password);
+    console.log(data);
+  }
+
   return (
     <>
-      <div className="w-1/3 mx-auto text-center shadow-2xl shadow-amber-300 rounded-box mt-40">
+      <div className="w-1/4 mx-auto text-center shadow-2xl shadow-amber-300 rounded-box mt-40">
         <label className="text-center text-4xl">Sunshine</label>
         <div>
-          <label className="input validator my-4">
+          <label className="input validator my-2">
             <svg
               className="h-[1em] opacity-50"
               xmlns="http://www.w3.org/2000/svg"
@@ -21,7 +33,13 @@ export default function Signup() {
                 <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
               </g>
             </svg>
-            <input type="email" placeholder="mail@site.com" required />
+            <input
+              type="email"
+              placeholder="mail@site.com"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
           </label>
           <div className="validator-hint hidden">Enter valid email address</div>
           <br />
@@ -50,6 +68,8 @@ export default function Signup() {
               minLength="8"
               pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
               title="Must be more than 8 characters, including number, lowercase letter, uppercase letter"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
           </label>
           <p className="validator-hint hidden">
@@ -60,6 +80,7 @@ export default function Signup() {
             At least one uppercase letter
           </p>
 
+          <br />
           <label className="input validator my-2">
             <svg
               className="h-[1em] opacity-50"
@@ -84,6 +105,8 @@ export default function Signup() {
               minLength="8"
               pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
               title="Must be more than 8 characters, including number, lowercase letter, uppercase letter"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
             />
           </label>
           <p className="validator-hint hidden">
@@ -99,7 +122,9 @@ export default function Signup() {
 
         <div>
           <button className="btn btn-primary mx-4 my-4">Login</button>
-          <button className="btn btn-secondary mx-4 my-4">Signup</button>
+          <button className="btn btn-secondary mx-4 my-4" onClick={onClick}>
+            Signup
+          </button>
         </div>
       </div>
     </>
