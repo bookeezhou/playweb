@@ -10,6 +10,7 @@ export default function Login() {
   async function onClick() {
     const data = await login(email, password);
 
+    console.log("Login", data);
     if (data) {
       navigate("/");
       console.log("Login successfully");

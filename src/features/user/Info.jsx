@@ -3,6 +3,7 @@ import { uploadAvatar } from "../../services/apiStorage";
 import { getConfig } from "../../utils/configHelper";
 import { useAtom } from "jotai";
 import { userAtom } from "../../atoms/user";
+import { getTeacherByTeacherId } from "../../services/apiTeacher";
 
 export default function Info() {
   const [user, setUser] = useAtom(userAtom);
@@ -14,6 +15,26 @@ export default function Info() {
   useEffect(() => {
     setCurrentAvatarUrl(user.avatar);
   }, [user]);
+
+  const [classInChargeArr, setClassInChargeArr] = useState([]);
+
+  useEffect(() => {
+    async function loadData() {
+      const token = getConfig("SUPABASE_TOKEN");
+      const userToken = JSON.parse(localStorage.getItem(token));
+
+      if (!userToken) {
+        return;
+      }
+
+      const teachers = await getTeacherByTeacherId(userToken.user.id);
+      const teacher = await teachers[0];
+
+      setClassInChargeArr(JSON.parse(teacher.class_in_charge));
+    }
+
+    loadData();
+  }, []);
 
   function handleCurrentAvatar(event) {
     const file = event.target.files[0];
@@ -72,21 +93,26 @@ export default function Info() {
           </label>
           <div className="validator-hint hidden">Enter valid email address</div>
           <br />
-          <ul className="w-full menu bg-base-200 rounded-box mx-auto  mb-3">
-            <li>
-              <details open>
-                <summary>Class in Charge</summary>
-                <ul>
-                  <li>
-                    <a>Submenu 1</a>
-                  </li>
-                  <li>
-                    <a>Submenu 2</a>
-                  </li>
-                </ul>
-              </details>
-            </li>
-          </ul>
+
+          {classInChargeArr.length > 0 && (
+            <ul className="w-full menu bg-base-200 rounded-box mx-auto  mb-3">
+              <li>
+                <details open>
+                  <summary>Class in Charge</summary>
+                  <ul>
+                    {classInChargeArr.map((classItem, idx) => (
+                      <li key={idx}>
+                        <a className="pointer-events-none">
+                          Class {classItem.split("|")[0]} | Year{" "}
+                          {classItem.split("|")[1]}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </details>
+              </li>
+            </ul>
+          )}
         </div>
         {/* button */}
 

@@ -19,6 +19,10 @@ export default function Navbar() {
   useEffect(() => {
     const token = getConfig("SUPABASE_TOKEN");
     const userToken = JSON.parse(localStorage.getItem(token));
+    // console.log(userToken);
+    if (!userToken) {
+      return;
+    }
     setUser(userToken.user.user_metadata.avatar);
   }, []);
 
