@@ -1,12 +1,19 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { uploadAvatar } from "../../services/apiStorage";
+import { getConfig } from "../../utils/configHelper";
+import { useAtom } from "jotai";
+import { userAtom } from "../../atoms/user";
 
 export default function Info() {
-  const [currentAvatarUrl, setCurrentAvatarUrl] = useState(
-    "https://img.daisyui.com/images/profile/demo/yellingcat@192.webp",
-  );
+  const [user, setUser] = useAtom(userAtom);
+
+  const [currentAvatarUrl, setCurrentAvatarUrl] = useState(user.avatar);
 
   const [avatarFile, setAvatarFile] = useState(null);
+
+  useEffect(() => {
+    setCurrentAvatarUrl(user.avatar);
+  }, [user]);
 
   function handleCurrentAvatar(event) {
     const file = event.target.files[0];
@@ -18,9 +25,11 @@ export default function Info() {
   async function onClick() {
     if (!avatarFile) {
       // waring toast
+      console.log("unselect avatar");
       return;
     }
     const data = await uploadAvatar(avatarFile);
+    setUser(data.user.user_metadata);
     console.log(data);
   }
   return (

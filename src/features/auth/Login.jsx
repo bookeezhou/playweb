@@ -104,7 +104,12 @@ export default function Login() {
           <button className="btn btn-primary mx-4 my-4" onClick={onClick}>
             Login
           </button>
-          <button className="btn btn-secondary mx-4 my-4">Signup</button>
+          <button
+            className="btn btn-secondary mx-4 my-4"
+            onClick={() => navigate("/signup")}
+          >
+            Signup
+          </button>
         </div>
       </div>
     </>

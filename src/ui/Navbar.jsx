@@ -1,5 +1,9 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { logout } from "../services/apiAuth";
+import { useEffect, useState } from "react";
+import { getConfig } from "../utils/configHelper";
+import { userAtom } from "../atoms/user";
+import { useAtom } from "jotai";
 
 export default function Navbar() {
   const navigate = useNavigate();
@@ -9,6 +13,15 @@ export default function Navbar() {
     const data = await logout();
     navigate("/login");
   }
+
+  const [user, setUser] = useAtom(userAtom);
+
+  useEffect(() => {
+    const token = getConfig("SUPABASE_TOKEN");
+    const userToken = JSON.parse(localStorage.getItem(token));
+    setUser(userToken.user.user_metadata.avatar);
+  }, []);
+
   return (
     <>
       <div className="navbar bg-base-300 shadow-sm">
@@ -101,10 +114,7 @@ export default function Navbar() {
               className="btn btn-ghost btn-circle avatar"
             >
               <div className="w-10 rounded-full">
-                <img
-                  alt="Tailwind CSS Navbar component"
-                  src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
-                />
+                <img alt="Tailwind CSS Navbar component" src={user.avatar} />
               </div>
             </div>
             <ul
