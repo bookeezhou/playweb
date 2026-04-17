@@ -11,7 +11,7 @@ export default function StudentCreate() {
   const [gender, setGender] = useState("male");
   const [email, setEmail] = useState("some@email.com");
   const [teacherId, setTeacherId] = useState("");
-  const [classInChargeArr, setClassinChargeArr] = useState([]);
+  const [classInChargeArr, setClassInChargeArr] = useState([]);
 
   useEffect(() => {
     const token = getConfig("SUPABASE_TOKEN");
@@ -23,9 +23,13 @@ export default function StudentCreate() {
 
     async function fetchData() {
       const teachers = await getTeacherByTeacherId(userToken.user.id);
-      const teacherInCharge = setClassinChargeArr(
-        JSON.parse(teachers[0].class_in_charge),
+      //
+      const classInChargeArrData = await JSON.parse(
+        teachers[0].class_in_charge,
       );
+
+      setClassInChargeArr(classInChargeArrData);
+      setClassInfo(classInChargeArrData[0]);
     }
 
     fetchData();
@@ -33,10 +37,10 @@ export default function StudentCreate() {
 
   async function onClick() {
     // Signup student user
-    const userData = await signup(email, "123456", { isStudent: true });
+    const userData = await signup(email, "12345678", { isStudent: true });
     console.log(userData);
 
-    console.log(classInfo);
+    // console.log(classInfo);
     // Insert student
     const students = await createStudent({
       name,
