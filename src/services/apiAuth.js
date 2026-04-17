@@ -1,6 +1,7 @@
 import { supabase } from "../utils/superbase";
 
 export async function signup(email, password, metadata = {}) {
+  console.log(metadata);
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
