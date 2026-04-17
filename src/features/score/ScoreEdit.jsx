@@ -38,7 +38,6 @@ export default function ScoreEdit() {
           </label>
 
           <select
-            defaultValue="Pick a color"
             className="select my-2 w-full"
             value={subject}
             onChange={(e) => setSubject(e.target.value)}
@@ -52,7 +51,6 @@ export default function ScoreEdit() {
           <div className="grid grid-cols-2 w-full gap-x-2">
             {/* semester Year*/}
             <select
-              defaultValue="Pick a color"
               className="select my-2 col-span-1"
               value={semesterYear}
               onChange={(e) => setSemesterYear(e.target.value)}
@@ -65,7 +63,6 @@ export default function ScoreEdit() {
 
             {/* semester season*/}
             <select
-              defaultValue="Pick a color"
               className="select my-2 col-span-1"
               value={semesterSeason}
               onChange={(e) => setSemesterSeason(e.target.value)}

@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react";
 import StudentListItem from "./StudentListItem";
 import { getStudentList } from "../../services/apiStudent";
+import { getUserId } from "../../utils/userHelper";
 
 export default function StudentList() {
   const [studentList, setStudentList] = useState([]);
 
   useEffect(() => {
     async function fetchData() {
-      const mockStudentList = await getStudentList();
+      const userId = getUserId();
+
+      const mockStudentList = await getStudentList(userId);
       // console.log(mockStudentList);
       setStudentList(mockStudentList);
     }

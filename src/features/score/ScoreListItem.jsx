@@ -1,12 +1,12 @@
 import { useNavigate } from "react-router-dom";
 
-export default function ScoreListItem({ scoreItem }) {
+export default function ScoreListItem({ scoreItem, currentStudent }) {
   const navigate = useNavigate();
 
   return (
     <tr>
-      <td>{scoreItem.student_id}</td>
-      <td>{scoreItem.student_id}</td>
+      <td>{currentStudent.name}</td>
+      <td>{`Class ${currentStudent.class} | Year ${currentStudent.grade}`}</td>
       <td>{scoreItem.subject}</td>
       <td>
         {scoreItem.semesterSeason} {scoreItem.semesterYear}

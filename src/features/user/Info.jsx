@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { uploadAvatar } from "../../services/apiStorage";
-import { getConfig } from "../../utils/configHelper";
 import { useAtom } from "jotai";
 import { userAtom } from "../../atoms/user";
 import { getTeacherByTeacherId } from "../../services/apiTeacher";
+import { getUserId } from "../../utils/userHelper";
 
 export default function Info() {
   const [user, setUser] = useAtom(userAtom);
@@ -20,14 +20,9 @@ export default function Info() {
 
   useEffect(() => {
     async function loadData() {
-      const token = getConfig("SUPABASE_TOKEN");
-      const userToken = JSON.parse(localStorage.getItem(token));
+      const userId = getUserId();
 
-      if (!userToken) {
-        return;
-      }
-
-      const teachers = await getTeacherByTeacherId(userToken.user.id);
+      const teachers = await getTeacherByTeacherId(userId);
       const teacher = await teachers[0];
 
       setClassInChargeArr(JSON.parse(teacher.class_in_charge));
