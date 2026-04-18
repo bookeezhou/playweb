@@ -6,6 +6,7 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import { getConfig } from "../../utils/configHelper";
 import { uploadAvatar } from "../../services/apiStorage";
+import Loading from "../../ui/Loading";
 
 export default function StudentEdit() {
   const [name, setName] = useState("Alex");
@@ -18,6 +19,8 @@ export default function StudentEdit() {
   );
   const [avatarFile, setAvatarFile] = useState(null);
 
+  const [isLoading, setIsloading] = useState(true);
+
   function handleAvatarChange(event) {
     const file = event.target.files[0];
     setAvatarFile(file);
@@ -28,6 +31,7 @@ export default function StudentEdit() {
 
   useEffect(() => {
     async function fetchData() {
+      setIsloading(true);
       const students = await getStudentByStudentId(params.id);
       const student = students[0];
 
@@ -36,6 +40,7 @@ export default function StudentEdit() {
       setName(student.name);
       setGender(student.gender);
       setCurrentAvatarUrl(student.avatar);
+      setIsloading(false);
     }
 
     fetchData();
@@ -72,50 +77,55 @@ export default function StudentEdit() {
   }
 
   return (
-    <div className="w-1/3 mx-auto text-center shadow-2xl shadow-amber-300 rounded-box mt-10 px-20 py-4 ">
-      <div className="avatar cursor-pointer">
-        <div className="w-24 rounded-full">
-          <label className="cursor-pointer" htmlFor="avatar-input">
-            <img src={currentAvatarUrl} />
-          </label>
-        </div>
-      </div>
+    <>
+      {isLoading && <Loading />}
+      {!isLoading && (
+        <div className="w-1/3 mx-auto text-center shadow-2xl shadow-amber-300 rounded-box mt-10 px-20 py-4 ">
+          <div className="avatar cursor-pointer">
+            <div className="w-24 rounded-full">
+              <label className="cursor-pointer" htmlFor="avatar-input">
+                <img src={currentAvatarUrl} />
+              </label>
+            </div>
+          </div>
 
-      <input
-        id="avatar-input"
-        type="file"
-        accept="image/*"
-        onChange={handleAvatarChange}
-        className="hidden"
-      />
-
-      <div className="w-3/4 mx-auto">
-        <label className="input input-bordered flex items-center gap-2 w-full my-4">
-          Name
           <input
-            type="text"
-            className="grow"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            id="avatar-input"
+            type="file"
+            accept="image/*"
+            onChange={handleAvatarChange}
+            className="hidden"
           />
-        </label>
 
-        <select
-          className="select select-bordered w-full mb-4"
-          value={gender}
-          onChange={(e) => setGender(e.target.value)}
-        >
-          <option disabled>Choose Gender</option>
-          <option>male</option>
-          <option>female</option>
-        </select>
-      </div>
+          <div className="w-3/4 mx-auto">
+            <label className="input input-bordered flex items-center gap-2 w-full my-4">
+              Name
+              <input
+                type="text"
+                className="grow"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+            </label>
 
-      <div className="text-center">
-        <button className="btn btn-primary my-2" onClick={onClick}>
-          Update Profile
-        </button>
-      </div>
-    </div>
+            <select
+              className="select select-bordered w-full mb-4"
+              value={gender}
+              onChange={(e) => setGender(e.target.value)}
+            >
+              <option disabled>Choose Gender</option>
+              <option>male</option>
+              <option>female</option>
+            </select>
+          </div>
+
+          <div className="text-center">
+            <button className="btn btn-primary my-2" onClick={onClick}>
+              Update Profile
+            </button>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
