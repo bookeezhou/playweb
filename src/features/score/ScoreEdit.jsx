@@ -1,4 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { getStudentByStudentId } from "../../services/apiStudent";
+import { getScoreByScoreId, updateScore } from "../../services/apiScore";
 
 export default function ScoreEdit() {
   const [score, setScore] = useState(80);
@@ -12,17 +15,57 @@ export default function ScoreEdit() {
     (_, idx) => 2000 + idx,
   );
 
+  const params = useParams();
+  const navigate = useNavigate();
+  const [currentStudent, setCurrentStudent] = useState({
+    name: "Someone",
+    class: "x",
+    grade: "x",
+  });
+
+  useEffect(() => {
+    async function fetchData() {
+      const scores = await getScoreByScoreId(params.id);
+      const scoreData = scores[0];
+
+      setScore(scoreData.score);
+      setSubject(scoreData.subject);
+      setSemesterSeason(scoreData.semesterSeason);
+      setSemesterYear(scoreData.semesterYear);
+
+      const students = await getStudentByStudentId(scoreData.student_id);
+      const student = students[0];
+      setCurrentStudent(student);
+    }
+
+    fetchData();
+  }, []);
+
+  async function onClick() {
+    const newScore = {
+      score,
+      subject,
+      semesterSeason,
+      semesterYear,
+    };
+
+    const scores = await updateScore(params.id, newScore);
+    console.log(scores);
+
+    navigate("/home/score");
+  }
+
   return (
     <>
       <div className="w-1/3 mx-auto text-center shadow-2xl shadow-amber-300 rounded-box mt-40 p-10">
-        <label className="text-center text-4xl pt-4">Sunshine</label>
+        <h1 className="text-center text-4xl pt-4">{currentStudent.name}</h1>
         <div>
           <label className="input my-2 w-full">
             Class
             <input
               type="text"
               className="grow"
-              value="Class 1 | Year 6"
+              value={`Class ${currentStudent.class} | Year ${currentStudent.grade}`}
               disabled
             />
           </label>
@@ -43,9 +86,14 @@ export default function ScoreEdit() {
             onChange={(e) => setSubject(e.target.value)}
           >
             <option disabled={true}>Choose Subject</option>
-            <option>Crimson</option>
-            <option>Amber</option>
-            <option>Velvet</option>
+            <option>Mathematics</option>
+            <option>English</option>
+            <option>Science</option>
+            <option>History</option>
+            <option>Geography</option>
+            <option>Art</option>
+            <option>Music</option>
+            <option>Sports</option>
           </select>
 
           <div className="grid grid-cols-2 w-full gap-x-2">
@@ -76,7 +124,9 @@ export default function ScoreEdit() {
 
         {/* button */}
         <div>
-          <button className="btn btn-primary my-4">Update Score</button>
+          <button className="btn btn-primary my-4" onClick={onClick}>
+            Update Score
+          </button>
         </div>
       </div>
     </>

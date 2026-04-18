@@ -3,10 +3,13 @@ import { getScoreList } from "../../services/apiScore";
 import ScoreListItem from "./ScoreListItem";
 import { getUserId } from "../../utils/userHelper";
 import { getStudentList } from "../../services/apiStudent";
+import Loading from "../../ui/Loading";
 
 export default function ScoreList() {
   const [scoreList, setScoreList] = useState([]);
   const [students, setStudents] = useState([]);
+
+  const [isLoading, setIsLoading] = useState(true);
 
   const filteredScoreList = scoreList.filter((scoreItem) => {
     return students
@@ -16,6 +19,8 @@ export default function ScoreList() {
 
   useEffect(() => {
     async function fetchData() {
+      setIsLoading(true);
+
       const userId = getUserId();
 
       const mockScoreList = await getScoreList();
@@ -23,6 +28,8 @@ export default function ScoreList() {
 
       const studentList = await getStudentList(userId);
       setStudents(studentList);
+
+      setIsLoading(false);
     }
 
     fetchData();
@@ -30,31 +37,34 @@ export default function ScoreList() {
 
   return (
     <>
-      <div className="overflow-x-auto">
-        <table className="table table-lg">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Class</th>
-              <th>Subject</th>
-              <th>Semester</th>
-              <th>Score</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredScoreList.map((scoreItem) => (
-              <ScoreListItem
-                key={scoreItem.id}
-                scoreItem={scoreItem}
-                currentStudent={students.find(
-                  (student) => student.student_id === scoreItem.student_id,
-                )}
-              />
-            ))}
-          </tbody>
-        </table>
-      </div>
+      {isLoading && <Loading />}
+      {!isLoading && (
+        <div className="overflow-x-auto">
+          <table className="table table-lg">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Class</th>
+                <th>Subject</th>
+                <th>Semester</th>
+                <th>Score</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredScoreList.map((scoreItem) => (
+                <ScoreListItem
+                  key={scoreItem.id}
+                  scoreItem={scoreItem}
+                  currentStudent={students.find(
+                    (student) => student.student_id === scoreItem.student_id,
+                  )}
+                />
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </>
   );
 }

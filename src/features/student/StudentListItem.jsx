@@ -36,7 +36,7 @@ export default function StudentListItem({ studentItem }) {
       <th>
         <button
           className="btn btn-ghost btn-sm"
-          onClick={() => navigate(`/home/student/${studentItem.id}`)}
+          onClick={() => navigate(`/home/student/${studentItem.student_id}`)}
         >
           details
         </button>

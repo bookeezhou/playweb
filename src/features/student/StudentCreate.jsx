@@ -3,6 +3,7 @@ import { getConfig } from "../../utils/configHelper";
 import { getTeacherByTeacherId } from "../../services/apiTeacher";
 import { signup } from "../../services/apiAuth";
 import { createStudent } from "../../services/apiStudent";
+import { useNavigate } from "react-router-dom";
 
 export default function StudentCreate() {
   const [name, setName] = useState("John Doe");
@@ -12,6 +13,8 @@ export default function StudentCreate() {
   const [email, setEmail] = useState("some@email.com");
   const [teacherId, setTeacherId] = useState("");
   const [classInChargeArr, setClassInChargeArr] = useState([]);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const token = getConfig("SUPABASE_TOKEN");
@@ -53,6 +56,7 @@ export default function StudentCreate() {
       student_id: userData.user.id,
     });
     console.log(students);
+    navigate("/home/student");
   }
 
   return (
