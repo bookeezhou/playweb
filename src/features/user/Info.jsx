@@ -4,6 +4,8 @@ import { useAtom } from "jotai";
 import { userAtom } from "../../atoms/user";
 import { getTeacherByTeacherId } from "../../services/apiTeacher";
 import { getUserId } from "../../utils/userHelper";
+import { getConfig } from "../../utils/configHelper";
+import { updateUser } from "../../services/apiAuth";
 
 export default function Info() {
   const [user, setUser] = useAtom(userAtom);
@@ -44,9 +46,23 @@ export default function Info() {
       console.log("unselect avatar");
       return;
     }
-    const data = await uploadAvatar(avatarFile);
-    setUser(data.user.user_metadata);
-    console.log(data);
+
+    // Build avatar filename
+    const token = getConfig("SUPABASE_TOKEN");
+
+    const userToken = JSON.parse(localStorage.getItem(token));
+    const avatarFilename = `${userToken.user.email}-${Date.now()}.png`;
+
+    // Upload avatar file
+    await uploadAvatar(avatarFile, avatarFilename);
+
+    // Update user metadata in supabase
+    const supabaseUrl = getConfig("SUPABASE_URL");
+    const newAvatarUrl = `${supabaseUrl}/storage/v1/object/public/avatar/public/${avatarFilename}`;
+    const newUserMetadata = await updateUser({ avatar: newAvatarUrl });
+
+    // Update user metadata in jotai
+    setUser(newUserMetadata.user.user_metadata);
   }
   return (
     <>
