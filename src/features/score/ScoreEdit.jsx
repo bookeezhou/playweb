@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { getStudentByStudentId } from "../../services/apiStudent";
 import { getScoreByScoreId, updateScore } from "../../services/apiScore";
 import Loading from "../../ui/Loading";
+import { toast } from "sonner";
 
 export default function ScoreEdit() {
   const [score, setScore] = useState(80);
@@ -46,6 +47,8 @@ export default function ScoreEdit() {
   }, []);
 
   async function onClick() {
+    toast.loading("updating...");
+
     const newScore = {
       score,
       subject,
@@ -55,6 +58,9 @@ export default function ScoreEdit() {
 
     const scores = await updateScore(params.id, newScore);
     console.log(scores);
+
+    toast.dismiss();
+    toast.success("updating successfuly");
 
     navigate("/home/score");
   }

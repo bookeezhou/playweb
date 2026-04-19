@@ -7,6 +7,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { getConfig } from "../../utils/configHelper";
 import { uploadAvatar } from "../../services/apiStorage";
 import Loading from "../../ui/Loading";
+import { toast } from "sonner";
 
 export default function StudentEdit() {
   const [name, setName] = useState("Alex");
@@ -47,6 +48,8 @@ export default function StudentEdit() {
   }, []);
 
   async function onClick() {
+    toast.loading("updating...");
+
     const newStudent = {
       name,
       gender,
@@ -72,6 +75,9 @@ export default function StudentEdit() {
     // Update student in supabase
     const student = await updateStudent(params.id, newStudent);
     console.log(student);
+
+    toast.dismiss();
+    toast.success("updating successfuly");
 
     navigate("/home/student");
   }

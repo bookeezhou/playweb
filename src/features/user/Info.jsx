@@ -7,6 +7,7 @@ import { getUserId } from "../../utils/userHelper";
 import { getConfig } from "../../utils/configHelper";
 import { updateUser } from "../../services/apiAuth";
 import Loading from "../../ui/Loading";
+import { toast } from "sonner";
 
 export default function Info() {
   const [user, setUser] = useAtom(userAtom);
@@ -47,9 +48,12 @@ export default function Info() {
   async function onClick() {
     if (!avatarFile) {
       // waring toast
-      console.log("unselect avatar");
+      toast.warning("Please select an avatar file");
+
+      // console.log("unselect avatar");
       return;
     }
+    toast.loading("updating...");
 
     // Build avatar filename
     const token = getConfig("SUPABASE_TOKEN");
@@ -67,6 +71,9 @@ export default function Info() {
 
     // Update user metadata in jotai
     setUser(newUserMetadata.user.user_metadata);
+
+    toast.dismiss();
+    toast.success("updating successfully");
   }
   return (
     <>

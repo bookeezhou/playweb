@@ -15,6 +15,7 @@ import ScoreEdit from "./features/score/ScoreEdit";
 import StudentEdit from "./features/student/StudentEdit";
 import ScoreUpload from "./features/score/ScoreUpload";
 import StudentCreate from "./features/student/StudentCreate";
+import { Toaster } from "sonner";
 
 function App() {
   return (
@@ -42,6 +43,7 @@ function App() {
           </Route>
         </Routes>
       </BrowserRouter>
+      <Toaster position="top-right" />
     </>
   );
 }

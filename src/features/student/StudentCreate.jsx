@@ -4,6 +4,7 @@ import { getTeacherByTeacherId } from "../../services/apiTeacher";
 import { signup } from "../../services/apiAuth";
 import { createStudent } from "../../services/apiStudent";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 export default function StudentCreate() {
   const [name, setName] = useState("John Doe");
@@ -39,7 +40,8 @@ export default function StudentCreate() {
   }, []);
 
   async function onClick() {
-    // Signup student user
+    toast.loading("updating...");
+    // Signup student use
     const userData = await signup(email, "12345678", { isStudent: true });
     console.log(userData);
 
@@ -56,6 +58,10 @@ export default function StudentCreate() {
       student_id: userData.user.id,
     });
     console.log(students);
+
+    toast.dismiss();
+    toast.success("updating successfuly");
+
     navigate("/home/student");
   }
 
