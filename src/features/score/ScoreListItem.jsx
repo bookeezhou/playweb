@@ -1,7 +1,11 @@
+import { useAtomValue } from "jotai";
 import { useNavigate } from "react-router-dom";
+import { isStudentAtom } from "../../atoms/user";
 
 export default function ScoreListItem({ scoreItem, currentStudent }) {
   const navigate = useNavigate();
+
+  const isStudent = useAtomValue(isStudentAtom);
 
   return (
     <tr>
@@ -12,15 +16,17 @@ export default function ScoreListItem({ scoreItem, currentStudent }) {
         {scoreItem.semesterSeason} {scoreItem.semesterYear}
       </td>
       <td>{scoreItem.score}</td>
-      <th>
-        <button
-          className="btn btn-ghost btn-sm"
-          onClick={() => navigate(`/home/score/${scoreItem.id}`)}
-        >
-          details
-        </button>
-        <button className="btn btn-error btn-sm">delete</button>
-      </th>
+      {!isStudent && (
+        <th>
+          <button
+            className="btn btn-ghost btn-sm"
+            onClick={() => navigate(`/home/score/${scoreItem.id}`)}
+          >
+            details
+          </button>
+          <button className="btn btn-error btn-sm">delete</button>
+        </th>
+      )}
     </tr>
   );
 }

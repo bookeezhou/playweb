@@ -1,13 +1,31 @@
-import { useState } from "react";
 import { login } from "../../services/apiAuth";
 import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+import ErrorMessage from "../../ui/ErrorMessage";
 
 export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  async function onClick() {
+  const validationSchema = yup
+    .object({
+      email: yup.string().required().email(),
+      password: yup.string().required().min(6),
+    })
+    .required();
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(validationSchema),
+  });
+
+  async function onSubmit({ email, password }) {
     const data = await login(email, password);
 
     console.log("Login", data);
@@ -21,7 +39,10 @@ export default function Login() {
   }
   return (
     <>
-      <div className="w-1/3 mx-auto text-center shadow-2xl shadow-amber-300 rounded-box mt-40">
+      <form
+        className="w-1/3 mx-auto text-center shadow-2xl shadow-amber-300 rounded-box mt-40"
+        onSubmit={handleSubmit(onSubmit)}
+      >
         <label className="text-center text-4xl">Sunshine</label>
         <div>
           <label className="input validator my-4">
@@ -45,11 +66,12 @@ export default function Login() {
               type="email"
               placeholder="mail@site.com"
               required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              {...register("email")}
             />
+            {errors.email && (
+              <ErrorMessage>{errors.email?.message}</ErrorMessage>
+            )}
           </label>
-          <div className="validator-hint hidden">Enter valid email address</div>
           <br />
           {/* password */}
           <label className="input validator my-2">
@@ -73,20 +95,12 @@ export default function Login() {
               type="password"
               required
               placeholder="Password"
-              minLength="8"
-              pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
-              title="Must be more than 8 characters, including number, lowercase letter, uppercase letter"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              {...register("password")}
             />
+            {errors.password && (
+              <ErrorMessage>{errors.password?.message}</ErrorMessage>
+            )}
           </label>
-          <p className="validator-hint hidden">
-            Must be more than 8 characters, including
-            <br />
-            At least one number <br />
-            At least one lowercase letter <br />
-            At least one uppercase letter
-          </p>
         </div>
 
         {/* button */}
@@ -102,9 +116,7 @@ export default function Login() {
           <button className="btn btn-link mx-1">Forgotten password?</button>
         </div>
         <div>
-          <button className="btn btn-primary mx-4 my-4" onClick={onClick}>
-            Login
-          </button>
+          <button className="btn btn-primary mx-4 my-4">Login</button>
           <button
             className="btn btn-secondary mx-4 my-4"
             onClick={() => navigate("/signup")}
@@ -112,7 +124,7 @@ export default function Login() {
             Signup
           </button>
         </div>
-      </div>
+      </form>
     </>
   );
 }

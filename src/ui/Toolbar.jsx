@@ -1,8 +1,21 @@
+import { useAtom, useAtomValue } from "jotai";
 import { useLocation, useNavigate } from "react-router-dom";
+import { isStudentAtom } from "../atoms/user";
+import { useState } from "react";
+import {
+  scoreSearchConditionAtom,
+  studentSearchConditionAtom,
+} from "../atoms/search";
+import { toast } from "sonner";
+import Condition from "./Condition";
 
 export default function Toolbar() {
   const location = useLocation();
   const navigate = useNavigate();
+
+  const isStudent = useAtomValue(isStudentAtom);
+
+  const [searchString, setSearchString] = useState("");
 
   function onClick() {
     const { pathname } = location;
@@ -14,142 +27,73 @@ export default function Toolbar() {
     navigate("/home/student/create");
   }
 
+  const isStudentList = location.pathname === "/home/student";
+  const [studentSearchCondition, setStudentSearchCondition] = useAtom(
+    studentSearchConditionAtom,
+  );
+  const [scoreSearchCondition, setScoreSearchCondition] = useAtom(
+    scoreSearchConditionAtom,
+  );
+
+  function onSearch() {
+    if (!searchString.length) {
+      toast.dismiss();
+      toast.warning("Please enter a search string");
+      return;
+    }
+
+    if (isStudentList) {
+      setStudentSearchCondition((prev) => [
+        ...prev,
+        searchString.toLowerCase(),
+      ]);
+    } else {
+      setScoreSearchCondition((prev) => [...prev, searchString.toLowerCase()]);
+    }
+
+    setSearchString("");
+  }
+
+  function onDelete(idx) {
+    if (isStudentList) {
+      setStudentSearchCondition((prev) => prev.filter((_, i) => i !== idx));
+    } else {
+      setScoreSearchCondition((prev) => prev.filter((_, i) => i !== idx));
+    }
+  }
+
   return (
     <section className="grid grid-cols-4 items-center text-center mx-4 my-6 w-full gap-2">
+      {/* condition */}
       <div className="col-span-1 flex gap-2 justify-center my-auto">
-        <div className="badge badge-info">
-          <svg
-            className="size-[1em] transition-transform transform hover:scale-150"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-          >
-            <g fill="currentColor" strokeLinejoin="miter" strokeLinecap="butt">
-              <circle
-                cx="12"
-                cy="12"
-                r="10"
-                fill="none"
-                stroke="currentColor"
-                strokeLinecap="square"
-                strokeMiterlimit="10"
-                strokeWidth="2"
-              ></circle>
-              <path
-                d="m12,17v-5.5c0-.276-.224-.5-.5-.5h-1.5"
-                fill="none"
-                stroke="currentColor"
-                strokeLinecap="square"
-                strokeMiterlimit="10"
-                strokeWidth="2"
-              ></path>
-              <circle
-                cx="12"
-                cy="7.25"
-                r="1.25"
-                fill="currentColor"
-                strokeWidth="2"
-              ></circle>
-            </g>
-          </svg>
-          Info
-        </div>
-        <div className="badge badge-success">
-          <svg
-            className="size-[1em] transition-transform transform hover:scale-150"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-          >
-            <g fill="currentColor" strokeLinejoin="miter" strokeLinecap="butt">
-              <circle
-                cx="12"
-                cy="12"
-                r="10"
-                fill="none"
-                stroke="currentColor"
-                strokeLinecap="square"
-                strokeMiterlimit="10"
-                strokeWidth="2"
-              ></circle>
-              <polyline
-                points="7 13 10 16 17 8"
-                fill="none"
-                stroke="currentColor"
-                strokeLinecap="square"
-                strokeMiterlimit="10"
-                strokeWidth="2"
-              ></polyline>
-            </g>
-          </svg>
-          Success
-        </div>
-        <div className="badge badge-warning">
-          <svg
-            className="size-[1em] transition-transform transform hover:scale-150"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 18 18"
-          >
-            <g fill="currentColor">
-              <path
-                d="M7.638,3.495L2.213,12.891c-.605,1.048,.151,2.359,1.362,2.359H14.425c1.211,0,1.967-1.31,1.362-2.359L10.362,3.495c-.605-1.048-2.119-1.048-2.724,0Z"
-                fill="none"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="1.5"
-              ></path>
-              <line
-                x1="9"
-                y1="6.5"
-                x2="9"
-                y2="10"
-                fill="none"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="1.5"
-              ></line>
-              <path
-                d="M9,13.569c-.552,0-1-.449-1-1s.448-1,1-1,1,.449,1,1-.448,1-1,1Z"
-                fill="currentColor"
-                data-stroke="none"
-                stroke="none"
-              ></path>
-            </g>
-          </svg>
-          Warning
-        </div>
-        <div className="badge badge-error">
-          <svg
-            className="size-[1em] transition-transform transform hover:scale-150"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-          >
-            <g fill="currentColor">
-              <rect
-                x="1.972"
-                y="11"
-                width="20.056"
-                height="2"
-                transform="translate(-4.971 12) rotate(-45)"
-                fill="currentColor"
-                strokeWidth={0}
-              ></rect>
-              <path
-                d="m12,23c-6.065,0-11-4.935-11-11S5.935,1,12,1s11,4.935,11,11-4.935,11-11,11Zm0-20C7.038,3,3,7.037,3,12s4.038,9,9,9,9-4.037,9-9S16.962,3,12,3Z"
-                strokeWidth={0}
-                fill="currentColor"
-              ></path>
-            </g>
-          </svg>
-          Error
-        </div>
+        {isStudentList
+          ? studentSearchCondition.map((studentCondition, idx) => (
+              <Condition onDelete={() => onDelete(idx)} key={idx}>
+                {studentCondition}
+              </Condition>
+            ))
+          : scoreSearchCondition.map((scoreCondition, idx) => (
+              <Condition onDelete={() => onDelete(idx)} key={idx}>
+                {scoreCondition}
+              </Condition>
+            ))}
       </div>
+
+      {/* search bar */}
       <div className="col-span-2">
         <label className="input w-3/5">
+          <input
+            type="text"
+            required
+            placeholder="Search"
+            value={searchString}
+            onChange={(e) => setSearchString(e.target.value)}
+          />
           <svg
-            className="h-[1em] opacity-50"
+            className="h-[1em] opacity-50 cursor-pointer"
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
+            onClick={onSearch}
           >
             <g
               strokeLinejoin="round"
@@ -162,16 +106,18 @@ export default function Toolbar() {
               <path d="m21 21-4.3-4.3"></path>
             </g>
           </svg>
-          <input type="search" required placeholder="Search" />
         </label>
       </div>
 
+      {/* Action button */}
       <div className="col-span-1">
-        <button className="btn btn-primary" onClick={onClick}>
-          {location.pathname === "/home/score"
-            ? "Upload Score"
-            : "Create Student"}
-        </button>
+        {!isStudent && (
+          <button className="btn btn-primary" onClick={onClick}>
+            {location.pathname === "/home/score"
+              ? "Upload Score"
+              : "Create Student"}
+          </button>
+        )}
       </div>
     </section>
   );

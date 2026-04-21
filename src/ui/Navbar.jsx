@@ -2,12 +2,14 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { logout } from "../services/apiAuth";
 import { useEffect, useState } from "react";
 import { getConfig } from "../utils/configHelper";
-import { userAtom } from "../atoms/user";
-import { useAtom } from "jotai";
+import { isStudentAtom, userAtom } from "../atoms/user";
+import { useAtom, useAtomValue } from "jotai";
+import ToggleTheme from "./ToggleTheme";
 
 export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
+  const isStudent = useAtomValue(isStudentAtom);
 
   async function onClick() {
     const data = await logout();
@@ -23,7 +25,7 @@ export default function Navbar() {
     if (!userToken) {
       return;
     }
-    setUser(userToken.user.user_metadata.avatar);
+    setUser(userToken.user.user_metadata);
   }, []);
 
   return (
@@ -85,32 +87,35 @@ export default function Navbar() {
 
         {/* web link */}
         <div className="navbar-center hidden lg:flex">
-          <ul className="menu menu-horizontal px-1">
-            <li>
-              <a
-                className={
-                  location.pathname === "/home/student" ? "menu-active" : ""
-                }
-                onClick={() => navigate("/home/student")}
-              >
-                Student
-              </a>
-            </li>
-            <li>
-              <a
-                className={
-                  location.pathname === "/home/score" ? "menu-active" : ""
-                }
-                onClick={() => navigate("/home/score")}
-              >
-                Score{" "}
-              </a>
-            </li>
-          </ul>
+          {!isStudent && (
+            <ul className="menu menu-horizontal px-1">
+              <li>
+                <a
+                  className={
+                    location.pathname === "/home/student" ? "menu-active" : ""
+                  }
+                  onClick={() => navigate("/home/student")}
+                >
+                  Student
+                </a>
+              </li>
+              <li>
+                <a
+                  className={
+                    location.pathname === "/home/score" ? "menu-active" : ""
+                  }
+                  onClick={() => navigate("/home/score")}
+                >
+                  Score
+                </a>
+              </li>
+            </ul>
+          )}
         </div>
 
         {/* avatar */}
         <div className="navbar-end">
+          <ToggleTheme className="ml-5" />
           <div className="dropdown dropdown-end">
             <div
               tabIndex={0}
@@ -121,6 +126,8 @@ export default function Navbar() {
                 <img alt="Tailwind CSS Navbar component" src={user.avatar} />
               </div>
             </div>
+
+            {/* action */}
             <ul
               tabIndex="-1"
               className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"

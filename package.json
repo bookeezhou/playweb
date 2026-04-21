@@ -11,14 +11,18 @@
   },
   "dependencies": {
     "@faker-js/faker": "^10.4.0",
+    "@hookform/resolvers": "^5.2.2",
     "@supabase/supabase-js": "^2.101.1",
     "@tailwindcss/vite": "^4.2.2",
     "jotai": "^2.19.0",
+    "jotai-devtools": "^0.13.1",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
+    "react-hook-form": "^7.73.1",
     "react-router-dom": "^7.13.2",
     "sonner": "^2.0.7",
-    "tailwindcss": "^4.2.2"
+    "tailwindcss": "^4.2.2",
+    "yup": "^1.7.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",

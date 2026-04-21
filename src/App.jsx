@@ -16,6 +16,8 @@ import StudentEdit from "./features/student/StudentEdit";
 import ScoreUpload from "./features/score/ScoreUpload";
 import StudentCreate from "./features/student/StudentCreate";
 import { Toaster } from "sonner";
+import { DevTools } from "jotai-devtools";
+import "jotai-devtools/styles.css";
 
 function App() {
   return (
@@ -44,6 +46,7 @@ function App() {
         </Routes>
       </BrowserRouter>
       <Toaster position="top-right" />
+      <DevTools />
     </>
   );
 }

@@ -5,6 +5,7 @@ import { signup } from "../../services/apiAuth";
 import { createStudent } from "../../services/apiStudent";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import Loading from "../../ui/Loading";
 
 export default function StudentCreate() {
   const [name, setName] = useState("John Doe");
@@ -14,6 +15,7 @@ export default function StudentCreate() {
   const [email, setEmail] = useState("some@email.com");
   const [teacherId, setTeacherId] = useState("");
   const [classInChargeArr, setClassInChargeArr] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const navigate = useNavigate();
 
@@ -26,6 +28,7 @@ export default function StudentCreate() {
     setTeacherId(userToken.user.id);
 
     async function fetchData() {
+      setIsLoading(true);
       const teachers = await getTeacherByTeacherId(userToken.user.id);
       //
       const classInChargeArrData = await JSON.parse(
@@ -34,15 +37,16 @@ export default function StudentCreate() {
 
       setClassInChargeArr(classInChargeArrData);
       setClassInfo(classInChargeArrData[0]);
+      setIsLoading(false);
     }
 
     fetchData();
   }, []);
 
   async function onClick() {
-    toast.loading("updating...");
+    toast.loading("creating...");
     // Signup student use
-    const userData = await signup(email, "12345678", { isStudent: true });
+    const userData = await signup(email, "A@123456", { isStudent: true });
     console.log(userData);
 
     // console.log(classInfo);
@@ -67,59 +71,62 @@ export default function StudentCreate() {
 
   return (
     <>
-      <div className="w-1/3 mx-auto text-center shadow-2xl shadow-amber-300 rounded-box mt-40 p-6">
-        <div>
-          <label className="input my-2 w-full">
-            Email
-            <input
-              type="text"
-              className="grow"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </label>
-          <label className="input my-2 w-full">
-            Name
-            <input
-              type="text"
-              className="grow"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-          </label>
+      {isLoading && <Loading />}
+      {!isLoading && (
+        <div className="w-1/3 mx-auto text-center shadow-2xl shadow-amber-300 rounded-box mt-40 p-6">
+          <div>
+            <label className="input my-2 w-full">
+              Email
+              <input
+                type="text"
+                className="grow"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </label>
+            <label className="input my-2 w-full">
+              Name
+              <input
+                type="text"
+                className="grow"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+            </label>
 
-          <select
-            className="select my-2 w-full"
-            value={classInfo}
-            onChange={(e) => setClassInfo(e.target.value)}
-          >
-            <option disabled={true}>Choose Class</option>
-            {classInChargeArr.map((item) => (
-              <option key={item} value={item}>
-                Class {item.split("|")[0]} | Year {item.split("|")[1]}
-              </option>
-            ))}
-          </select>
-          <br />
+            <select
+              className="select my-2 w-full"
+              value={classInfo}
+              onChange={(e) => setClassInfo(e.target.value)}
+            >
+              <option disabled={true}>Choose Class</option>
+              {classInChargeArr.map((item) => (
+                <option key={item} value={item}>
+                  Class {item.split("|")[0]} | Year {item.split("|")[1]}
+                </option>
+              ))}
+            </select>
+            <br />
 
-          <select
-            className="select my-2 w-full"
-            value={gender}
-            onChange={(e) => setGender(e.target.value)}
-          >
-            <option disabled={true}>Choose Gender</option>
-            <option>male</option>
-            <option>female</option>
-          </select>
+            <select
+              className="select my-2 w-full"
+              value={gender}
+              onChange={(e) => setGender(e.target.value)}
+            >
+              <option disabled={true}>Choose Gender</option>
+              <option>male</option>
+              <option>female</option>
+            </select>
+          </div>
+
+          {/* button */}
+          <div>
+            <button className="btn btn-primary my-4" onClick={onClick}>
+              Create Student
+            </button>
+          </div>
         </div>
-
-        {/* button */}
-        <div>
-          <button className="btn btn-primary my-4" onClick={onClick}>
-            Create Student
-          </button>
-        </div>
-      </div>
+      )}
     </>
   );
 }

@@ -1,16 +1,36 @@
-import { useState } from "react";
 import { signup } from "../../services/apiAuth";
 import { useNavigate } from "react-router-dom";
 import { createTeacher } from "../../services/apiTeacher";
 
-export default function Signup() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import ErrorMessage from "../../ui/ErrorMessage";
 
+export default function Signup() {
   const navigate = useNavigate();
 
-  async function onClick() {
+  const validationSchema = yup
+    .object({
+      email: yup.string().required().email(),
+      password: yup.string().required().min(6),
+      confirmPassword: yup
+        .string()
+        .required()
+        .min(6)
+        .oneOf([yup.ref("password")], "Passwords must match"),
+    })
+    .required();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(validationSchema),
+  });
+
+  async function onSubmit({ email, password }) {
     const data = await signup(email, password);
     console.log(data);
 
@@ -20,7 +40,10 @@ export default function Signup() {
 
   return (
     <>
-      <div className="w-1/4 mx-auto text-center shadow-2xl shadow-amber-300 rounded-box mt-40">
+      <form
+        className="w-1/3 mx-auto text-center shadow-2xl shadow-amber-300 rounded-box mt-40"
+        onSubmit={handleSubmit(onSubmit)}
+      >
         <label className="text-center text-4xl">Sunshine</label>
         <div>
           <label className="input validator my-2">
@@ -44,11 +67,12 @@ export default function Signup() {
               type="email"
               placeholder="mail@site.com"
               required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              {...register("email")}
             />
+            {errors.email && (
+              <ErrorMessage>{errors.email?.message}</ErrorMessage>
+            )}
           </label>
-          <div className="validator-hint hidden">Enter valid email address</div>
           <br />
           {/* password */}
           <label className="input validator my-2">
@@ -72,20 +96,12 @@ export default function Signup() {
               type="password"
               required
               placeholder="Password"
-              minLength="8"
-              pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
-              title="Must be more than 8 characters, including number, lowercase letter, uppercase letter"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              {...register("password")}
             />
+            {errors.password && (
+              <ErrorMessage>{errors.password?.message}</ErrorMessage>
+            )}
           </label>
-          <p className="validator-hint hidden">
-            Must be more than 8 characters, including
-            <br />
-            At least one number <br />
-            At least one lowercase letter <br />
-            At least one uppercase letter
-          </p>
 
           <br />
           <label className="input validator my-2">
@@ -109,24 +125,15 @@ export default function Signup() {
               type="password"
               required
               placeholder="Confirm Password"
-              minLength="8"
-              pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
-              title="Must be more than 8 characters, including number, lowercase letter, uppercase letter"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
+              {...register("confirmPassword")}
             />
+            {errors.confirmPassword && (
+              <ErrorMessage>{errors.confirmPassword?.message}</ErrorMessage>
+            )}
           </label>
-          <p className="validator-hint hidden">
-            Must be more than 8 characters, including
-            <br />
-            At least one number <br />
-            At least one lowercase letter <br />
-            At least one uppercase letter
-          </p>
         </div>
 
         {/* button */}
-
         <div>
           <button
             className="btn btn-primary mx-4 my-4"
@@ -134,11 +141,9 @@ export default function Signup() {
           >
             Login
           </button>
-          <button className="btn btn-secondary mx-4 my-4" onClick={onClick}>
-            Signup
-          </button>
+          <button className="btn btn-secondary mx-4 my-4">Signup</button>
         </div>
-      </div>
+      </form>
     </>
   );
 }

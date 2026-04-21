@@ -1,16 +1,18 @@
 import { useEffect, useState } from "react";
 import { uploadAvatar } from "../../services/apiStorage";
-import { useAtom } from "jotai";
-import { userAtom } from "../../atoms/user";
+import { useAtom, useAtomValue } from "jotai";
+import { isStudentAtom, userAtom } from "../../atoms/user";
 import { getTeacherByTeacherId } from "../../services/apiTeacher";
 import { getUserId } from "../../utils/userHelper";
 import { getConfig } from "../../utils/configHelper";
 import { updateUser } from "../../services/apiAuth";
 import Loading from "../../ui/Loading";
 import { toast } from "sonner";
+import { updateStudent } from "../../services/apiStudent";
 
 export default function Info() {
   const [user, setUser] = useAtom(userAtom);
+  const isStudent = useAtomValue(isStudentAtom);
 
   const [currentAvatarUrl, setCurrentAvatarUrl] = useState(user.avatar);
 
@@ -24,19 +26,27 @@ export default function Info() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    if (isStudent === null) {
+      return;
+    }
+
     async function loadData() {
       setIsLoading(true);
-      const userId = getUserId();
 
-      const teachers = await getTeacherByTeacherId(userId);
-      const teacher = await teachers[0];
+      console.log(isStudent);
+      if (!isStudent) {
+        const userId = getUserId();
 
-      setClassInChargeArr(JSON.parse(teacher.class_in_charge));
+        const teachers = await getTeacherByTeacherId(userId);
+        const teacher = await teachers[0];
+
+        setClassInChargeArr(JSON.parse(teacher.class_in_charge));
+      }
       setIsLoading(false);
     }
 
     loadData();
-  }, []);
+  }, [isStudent]);
 
   function handleCurrentAvatar(event) {
     const file = event.target.files[0];
@@ -69,6 +79,14 @@ export default function Info() {
     const newAvatarUrl = `${supabaseUrl}/storage/v1/object/public/avatar/public/${avatarFilename}`;
     const newUserMetadata = await updateUser({ avatar: newAvatarUrl });
 
+    const userId = getUserId();
+    if (isStudent) {
+      const newStudents = await updateStudent(userId, {
+        avatar: newAvatarUrl,
+      });
+      console.log(newStudents);
+    }
+
     // Update user metadata in jotai
     setUser(newUserMetadata.user.user_metadata);
 
@@ -95,6 +113,8 @@ export default function Info() {
             className="hidden"
             onChange={handleCurrentAvatar}
           />
+
+          {/* class */}
           <div>
             <label className="input validator my-4 w-full">
               <svg
@@ -113,7 +133,7 @@ export default function Info() {
                   <circle cx="12" cy="7" r="4"></circle>
                 </g>
               </svg>
-              <input type="email" placeholder="mail@site.com" disabled />
+              <input type="email" disabled value={user.email} />
             </label>
             <div className="validator-hint hidden">
               Enter valid email address
@@ -140,6 +160,7 @@ export default function Info() {
               </ul>
             )}
           </div>
+
           {/* button */}
 
           <div>

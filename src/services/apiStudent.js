@@ -73,6 +73,24 @@ import { supabase } from "../utils/superbase";
     teacher: "mrs. clark",
   },
 ]; */
+export async function getStudentListWithLimit(
+  teacherId,
+  currentPage,
+  pageSize,
+) {
+  const { data: student, error } = await supabase
+    .from("student")
+    .select("*")
+    .eq("teacher_id", teacherId)
+    .range((currentPage - 1) * pageSize, currentPage * pageSize - 1);
+
+  if (error) {
+    console.log(error.message);
+    return;
+  }
+
+  return student;
+}
 
 export async function getStudentList(teacherId) {
   const { data: student, error } = await supabase
@@ -100,6 +118,20 @@ export async function createStudent(newStudent) {
   }
 
   return data;
+}
+
+export async function countStudents(teacherId) {
+  const { count, error } = await supabase
+    .from("student")
+    .select("*", { count: "exact", head: true })
+    .eq("teacher_id", teacherId);
+
+  if (error) {
+    console.log(error.message);
+    return;
+  }
+
+  return count;
 }
 
 export async function getStudentByStudentId(studentId) {
